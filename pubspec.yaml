@@ -30,6 +30,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  # 状态管理 https://pub-web.flutter-io.cn/packages/provider
+  provider: ^6.1.5+1
+  # 图片缓存 https://pub-web.flutter-io.cn/packages/cached_network_image
+  cached_network_image: ^3.4.1
+  # 网络请求 https://pub-web.flutter-io.cn/packages/dio
+  dio: ^5.9.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -56,6 +62,12 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/images/home/
+    - assets/images/order/
+    - assets/images/order/dark/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

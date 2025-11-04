@@ -7,6 +7,13 @@
 项目参考：https://github.com/simplezhli/flutter_deer
 
 
+# 常用命令
+
+flutter run  // 在运行项目
+
+flutter emulators // 列出所有可用的模拟器
+
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
