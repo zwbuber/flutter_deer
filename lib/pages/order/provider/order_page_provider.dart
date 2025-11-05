@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class OrderPageProvider extends ChangeNotifier {
   int _index = 0;
 
-  int get intex => _index;
+  int get index => _index;
 
   void refresh(int index) {
     notifyListeners(); // 刷新界面

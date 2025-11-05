@@ -4,6 +4,7 @@ import 'package:flutter_deer/pages/order/order_list_page.dart';
 import 'package:flutter_deer/pages/order/provider/order_page_provider.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
 import 'package:flutter_deer/widgets/load_image.dart';
+import 'package:flutter_deer/widgets/my_card.dart';
 import 'package:flutter_deer/widgets/my_flexible_space_bar.dart';
 import 'package:flutter_deer/widgets/screen_utils.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +16,10 @@ class OrderPage extends StatefulWidget {
   State<OrderPage> createState() => _OrderPageState();
 }
 
-class _OrderPageState extends State<OrderPage> {
+class _OrderPageState extends State<OrderPage>
+    with
+        AutomaticKeepAliveClientMixin<OrderPage>,
+        SingleTickerProviderStateMixin {
   final PageController _pageController = PageController(); // 页面控制器
 
   int _lastReportedPage = 0; // 最后一次报告的页面索引
@@ -29,7 +33,8 @@ class _OrderPageState extends State<OrderPage> {
   @override
   void initState() {
     super.initState();
-    // _tabController = TabController(vsync: this, length: 5);
+    // 初始化选项卡控制器，vsync: this 表示使用当前State的TickerProvider
+    _tabController = TabController(vsync: this, length: 5);
   }
 
   @override
@@ -38,39 +43,43 @@ class _OrderPageState extends State<OrderPage> {
     super.dispose();
   }
 
+  /// https://github.com/simplezhli/flutter_deer/issues/194
+  @override
+  // ignore: must_call_super
+  void didChangeDependencies() {}
+
   @override
   Widget build(BuildContext context) {
     isDark = context.isDark;
-
     return ChangeNotifierProvider<OrderPageProvider>(
       create: (context) => provider,
       child: Scaffold(
         body: Stack(
-          // 堆叠容器
+          // 堆叠组件
           children: [
-            SafeArea(
-              // 尺寸容器
-              child: SizedBox(
-                height: 105,
-                width: double.infinity,
-                child: isDark
-                    ? null
-                    : const DecoratedBox(
-                        // 装饰容器
-                        // 背景渐变效果
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Colours.gradient_blue, Color(0xFF4647FA)],
-                          ),
-                        ),
-                      ),
-              ),
-            ),
+            /// 像素对齐问题的临时解决方法
+            // SafeArea(
+            //   child: SizedBox(
+            //     height: 105,
+            //     width: double.infinity,
+            //     child: isDark
+            //         ? null
+            //         : const DecoratedBox(
+            //             decoration: BoxDecoration(
+            //               gradient: LinearGradient(
+            //                 colors: [Colours.gradient_blue, Color(0xFF4647FA)],
+            //               ),
+            //             ),
+            //           ),
+            //   ),
+            // ),
             // 嵌套滚动视图
             NestedScrollView(
-              // 头部
+              key: const Key('order_list'), // 设置NestedScrollView的key，以便在重建时保持状态
+              physics: const ClampingScrollPhysics(), // 滚动物理属性，防止滑动到底部时可以继续滑动
+              // 头部构建
               headerSliverBuilder: (context, innerBoxIsScrolled) =>
-                  _sliverBuilder(context),
+                  _headerSliverBuilder(context),
               // NotificationListener  监听滚动事件
               body: NotificationListener<ScrollNotification>(
                 // 滚动事件回调函数
@@ -103,7 +112,8 @@ class _OrderPageState extends State<OrderPage> {
     );
   }
 
-  List<Widget> _sliverBuilder(BuildContext context) {
+  // 头部构建
+  List<Widget> _headerSliverBuilder(BuildContext context) {
     return [
       // SliverOverlapAbsorber 组件用于处理嵌套滚动视图中重叠的问题。它允许你将一个滑动视图中的滑动事件传递给另一个滑动视图，从而避免滑动冲突和重叠问题
       SliverOverlapAbsorber(
@@ -154,6 +164,65 @@ class _OrderPageState extends State<OrderPage> {
           ),
         ),
       ),
+      // SliverPersistentHeader 组件用于创建可以跟随滑动而固定的头部
+      SliverPersistentHeader(
+        pinned: true,
+        delegate: SliverAppBarDelegate(
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: isDark ? Colours.dark_bg_color : null,
+              image: isDark
+                  ? null
+                  : DecorationImage(
+                      image: new ExactAssetImage(
+                        'assets/images/order/order_bg1.png',
+                      ),
+                      fit: BoxFit.fill,
+                    ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+              ), // 设置左右内边距为16.0
+              child: MyCard(
+                child: Container(
+                  height: 80.0,
+                  padding: const EdgeInsets.only(top: 8.0), // 设置顶部内边距为8.0
+                  child: TabBar(
+                    labelPadding: EdgeInsets.zero,
+                    controller: _tabController,
+                    labelColor: context.isDark
+                        ? Colours.dark_text
+                        : Colours.text,
+                    unselectedLabelColor: context.isDark
+                        ? Colours.dark_text_gray
+                        : Colours.text,
+                    labelStyle: TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.bold,
+                    ), // 设置选中标签的样式，字体大小设置为14.0，加粗显示
+                    unselectedLabelStyle: const TextStyle(
+                      fontSize: 14.0,
+                    ), // 设置未选中标签的样式，字体大小设置为14.0
+                    indicatorColor: Colors.transparent, // 设置指示器的颜色为透明，不显示下划线
+                    tabs: const [
+                      _TabView(0, '新订单'),
+                      _TabView(1, '待配送'),
+                      _TabView(2, '待完成'),
+                      _TabView(3, '已完成'),
+                      _TabView(4, '已取消'),
+                    ],
+                    onTap: (index) {
+                      _pageController.jumpToPage(index);
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
+          80.0,
+        ),
+      ),
     ];
   }
 
@@ -161,5 +230,116 @@ class _OrderPageState extends State<OrderPage> {
     provider.setIndex(index);
     // 这里没有指示器，所以缩短过渡动画时间，减少不必要的刷新
     _tabController?.animateTo(index, duration: Duration.zero);
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+}
+
+// SliverPersistentHeaderDelegate 是一个抽象类，用于创建可以跟随滑动而固定的头部
+class SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  SliverAppBarDelegate(this.widget, this.height);
+
+  final Widget widget;
+  final double height;
+
+  // minHeight 和 maxHeight 的值设置为相同时，header就不会收缩了
+  @override
+  double get minExtent => height;
+
+  @override
+  double get maxExtent => height;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return widget;
+  }
+
+  @override
+  bool shouldRebuild(SliverAppBarDelegate oldDelegate) {
+    return true;
+  }
+}
+
+// 订单页头部标签
+
+List<List<String>> img = [
+  ['order/xdd_s', 'order/xdd_n'],
+  ['order/dps_s', 'order/dps_n'],
+  ['order/dwc_s', 'order/dwc_n'],
+  ['order/ywc_s', 'order/ywc_n'],
+  ['order/yqx_s', 'order/yqx_n'],
+];
+
+// 夜间模式图标列表
+List<List<String>> darkImg = [
+  ['order/dark/icon_xdd_s', 'order/dark/icon_xdd_n'],
+  ['order/dark/icon_dps_s', 'order/dark/icon_dps_n'],
+  ['order/dark/icon_dwc_s', 'order/dark/icon_dwc_n'],
+  ['order/dark/icon_ywc_s', 'order/dark/icon_ywc_n'],
+  ['order/dark/icon_yqx_s', 'order/dark/icon_yqx_n'],
+];
+
+// 订单页头部标签控件
+class _TabView extends StatelessWidget {
+  const _TabView(this.index, this.text);
+
+  final int index;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final List<List<String>> imgList = context.isDark ? darkImg : img;
+    return Stack(
+      children: [
+        // 标签控件
+        Container(
+          width: 46.0,
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Column(
+            children: [
+              LoadAssetImage(
+                context.select<OrderPageProvider, int>(
+                          (value) => value.index,
+                        ) ==
+                        index
+                    ? imgList[index][1]
+                    : imgList[index][0],
+                width: 24.0,
+                height: 24.0,
+              ),
+              SizedBox(height: 4),
+              Text(text),
+            ],
+          ),
+        ),
+        // 小红点控件，只在前三项显示
+        Positioned(
+          right: 0.0,
+          child: index < 3
+              ? DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.error,
+                    borderRadius: BorderRadius.circular(11.0),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 5.5,
+                      vertical: 2.0,
+                    ),
+                    child: Text(
+                      '10',
+                      style: TextStyle(color: Colors.white, fontSize: 12.0),
+                    ),
+                  ),
+                )
+              : SizedBox.shrink(),
+        ),
+      ],
+    );
   }
 }
