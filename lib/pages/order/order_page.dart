@@ -174,9 +174,7 @@ class _OrderPageState extends State<OrderPage>
               image: isDark
                   ? null
                   : DecorationImage(
-                      image: new ExactAssetImage(
-                        'assets/images/order/order_bg1.png',
-                      ),
+                      image: AssetImage('assets/images/order/order_bg1.png'),
                       fit: BoxFit.fill,
                     ),
             ),
@@ -307,8 +305,8 @@ class _TabView extends StatelessWidget {
                           (value) => value.index,
                         ) ==
                         index
-                    ? imgList[index][1]
-                    : imgList[index][0],
+                    ? imgList[index][0]
+                    : imgList[index][1],
                 width: 24.0,
                 height: 24.0,
               ),

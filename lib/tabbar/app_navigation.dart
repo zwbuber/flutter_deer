@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_deer/common/constant/colors.dart';
-import 'package:flutter_deer/pages/home/home_page.dart';
+import 'package:flutter_deer/pages/goods/goods_page.dart';
 import 'package:flutter_deer/pages/order/order_page.dart';
+import 'package:flutter_deer/pages/shop/shop_page.dart';
+import 'package:flutter_deer/pages/statistics/statistics_page.dart';
 import 'package:flutter_deer/tabbar/app_bottom_bar.dart';
 import 'package:flutter_deer/widgets/load_image.dart';
 
@@ -76,7 +78,7 @@ class _AppNavigationState extends State<AppNavigation> {
     return PageView(
       physics: const NeverScrollableScrollPhysics(),
       controller: _ctrl,
-      children: [OrderPage(), HomePage(), HomePage(), HomePage()],
+      children: [OrderPage(), GoodsPage(), StatisticsPage(), ShopPage()],
     );
   }
 }
