@@ -68,6 +68,7 @@ flutter:
     - assets/images/home/
     - assets/images/order/
     - assets/images/order/dark/
+    - assets/images/state/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
