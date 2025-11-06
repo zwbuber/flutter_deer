@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_deer/common/constant/colors.dart';
+import 'package:flutter_deer/res/colors.dart';
 
 class ThemeUtils {
   static bool isDark(BuildContext context) {

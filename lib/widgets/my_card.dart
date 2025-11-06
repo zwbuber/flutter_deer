@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_deer/common/constant/colors.dart';
+import 'package:flutter_deer/res/colors.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
 
 // 自定义卡片组件

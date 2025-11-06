@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_deer/common/constant/colors.dart';
+import 'package:flutter_deer/res/colors.dart';
 import 'package:flutter_deer/pages/goods/goods_page.dart';
 import 'package:flutter_deer/pages/order/order_page.dart';
 import 'package:flutter_deer/pages/shop/shop_page.dart';
