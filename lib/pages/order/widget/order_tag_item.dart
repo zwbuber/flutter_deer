@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_deer/res/gaps.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
 import 'package:flutter_deer/widgets/load_image.dart';
 import 'package:flutter_deer/widgets/my_card.dart';
@@ -12,7 +13,7 @@ class OrderTagItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 0),
+      padding: const EdgeInsets.only(top: 8.0),
       child: MyCard(
         child: Container(
           height: 43.0,
@@ -31,9 +32,9 @@ class OrderTagItem extends StatelessWidget {
                   width: 14.0,
                   height: 14.0,
                 ),
-              SizedBox(height: 10),
+              Gaps.vGap10,
               Text(date),
-              const Expanded(child: SizedBox.shrink()),
+              const Expanded(child: Gaps.empty),
               Text('$orderTotal单'),
             ],
           ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_deer/common/constant/colors.dart';
+import 'package:flutter_deer/res/colors.dart';
 import 'package:flutter_deer/pages/order/order_list_page.dart';
 import 'package:flutter_deer/pages/order/provider/order_page_provider.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
@@ -16,6 +16,10 @@ class OrderPage extends StatefulWidget {
   State<OrderPage> createState() => _OrderPageState();
 }
 
+/*
+AutomaticKeepAliveClientMixin 可以实现页面在切换时保持状态不被重置，
+SingleTickerProviderStateMixin 可以实现页面在切换时保持动画状态不被重置，
+ */
 class _OrderPageState extends State<OrderPage>
     with
         AutomaticKeepAliveClientMixin<OrderPage>,
@@ -43,37 +47,22 @@ class _OrderPageState extends State<OrderPage>
     super.dispose();
   }
 
-  /// https://github.com/simplezhli/flutter_deer/issues/194
+  // https://github.com/simplezhli/flutter_deer/issues/194
   @override
   // ignore: must_call_super
   void didChangeDependencies() {}
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     isDark = context.isDark;
     return ChangeNotifierProvider<OrderPageProvider>(
       create: (context) => provider,
       child: Scaffold(
+        // 堆叠组件
         body: Stack(
-          // 堆叠组件
           children: [
-            /// 像素对齐问题的临时解决方法
-            // SafeArea(
-            //   child: SizedBox(
-            //     height: 105,
-            //     width: double.infinity,
-            //     child: isDark
-            //         ? null
-            //         : const DecoratedBox(
-            //             decoration: BoxDecoration(
-            //               gradient: LinearGradient(
-            //                 colors: [Colours.gradient_blue, Color(0xFF4647FA)],
-            //               ),
-            //             ),
-            //           ),
-            //   ),
-            // ),
-            // 嵌套滚动视图
+            // 嵌套滚动视图组件
             NestedScrollView(
               key: const Key('order_list'), // 设置NestedScrollView的key，以便在重建时保持状态
               physics: const ClampingScrollPhysics(), // 滚动物理属性，防止滑动到底部时可以继续滑动
@@ -203,6 +192,7 @@ class _OrderPageState extends State<OrderPage>
                       fontSize: 14.0,
                     ), // 设置未选中标签的样式，字体大小设置为14.0
                     indicatorColor: Colors.transparent, // 设置指示器的颜色为透明，不显示下划线
+                    dividerColor: Colors.transparent, // 设置分割线的颜色为透明，不显示分割线
                     tabs: const [
                       _TabView(0, '新订单'),
                       _TabView(1, '待配送'),
@@ -211,6 +201,10 @@ class _OrderPageState extends State<OrderPage>
                       _TabView(4, '已取消'),
                     ],
                     onTap: (index) {
+                      // mounted 是用来判断当前组件是否已经挂载到树上了，如果没有挂载则不执行下面的代码。这样可以避免在组件销毁后还尝试更新UI导致的错误。
+                      if (!mounted) {
+                        return;
+                      }
                       _pageController.jumpToPage(index);
                     },
                   ),
@@ -257,6 +251,7 @@ class SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
     return widget;
   }
 
+  // 是否需要重建头部控件，这里设置为true，表示每次滑动都会重新构建头部控件
   @override
   bool shouldRebuild(SliverAppBarDelegate oldDelegate) {
     return true;

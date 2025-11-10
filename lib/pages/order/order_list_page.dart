@@ -3,6 +3,7 @@ import 'package:flutter_deer/pages/order/provider/order_page_provider.dart';
 import 'package:flutter_deer/pages/order/widget/order_item.dart';
 import 'package:flutter_deer/pages/order/widget/order_tag_item.dart';
 import 'package:flutter_deer/util/change_notifier_manage.dart';
+import 'package:flutter_deer/widgets/state_layout.dart';
 import 'package:provider/provider.dart';
 
 class OrderListPage extends StatefulWidget {
@@ -22,6 +23,12 @@ class _OrderListPageState extends State<OrderListPage>
         ChangeNotifierMixin<OrderListPage> {
   final ScrollController _controller = ScrollController();
 
+  final StateType _stateType = StateType.loading;
+
+  /// 是否正在加载数据
+  bool _isLoading = false;
+
+  final int _maxPage = 3;
   int _page = 1;
   int _index = 0;
   List<String> _list = [];
@@ -40,8 +47,9 @@ class _OrderListPageState extends State<OrderListPage>
 
   @override
   Widget build(BuildContext context) {
-    // NotificationListener 监听通知
+    super.build(context);
 
+    // NotificationListener 监听通知
     return NotificationListener(
       // RefreshIndicator 下拉刷新控件
       child: RefreshIndicator(
@@ -66,9 +74,9 @@ class _OrderListPageState extends State<OrderListPage>
             );
           },
           child: SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             sliver: _list.isEmpty
-                ? SliverFillRemaining(child: Text('无数据'))
+                ? SliverFillRemaining(child:  StateLayout(type: _stateType))
                 : SliverList(
                     delegate: SliverChildBuilderDelegate((
                       BuildContext context,
@@ -99,6 +107,27 @@ class _OrderListPageState extends State<OrderListPage>
       setState(() {
         _page = 1;
         _list = List.generate(10, (i) => 'newItem：$i');
+      });
+    });
+  }
+
+  bool _hasMore() {
+    return _page < _maxPage;
+  }
+
+  Future<void> _loadMore() async {
+    if (_isLoading) {
+      return;
+    }
+    if (!_hasMore()) {
+      return;
+    }
+    _isLoading = true;
+    await Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        _list.addAll(List.generate(10, (i) => 'newItem：$i'));
+        _page++;
+        _isLoading = false;
       });
     });
   }
