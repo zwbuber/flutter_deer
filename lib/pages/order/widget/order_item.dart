@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_deer/pages/order/widget/pay_type_dialog.dart';
 import 'package:flutter_deer/res/colors.dart';
 import 'package:flutter_deer/res/gaps.dart';
+import 'package:flutter_deer/util/app_navigator_utils.dart';
 import 'package:flutter_deer/util/other_utils.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
+import 'package:flutter_deer/util/toast_utils.dart';
 import 'package:flutter_deer/widgets/my_card.dart';
 
 const List<String> orderLeftButtonText = ['拒单', '拒单', '订单跟踪', '订单跟踪', '订单跟踪'];
@@ -121,6 +124,11 @@ class OrderItem extends StatelessWidget {
               text: orderLeftButtonText[tabIndex],
               textColor: isDark ? Colours.dark_text : Colours.text,
               bgColor: isDark ? Colours.dark_material_bg : Colours.bg_gray,
+              onTap: () {
+                if (tabIndex >= 2) {
+                  // AppNavigatorUtils.push(context, OrderRouter.orderTrackPage);
+                }
+              },
             ),
             if (orderRightButtonText[tabIndex].isEmpty)
               Gaps.empty
@@ -134,6 +142,11 @@ class OrderItem extends StatelessWidget {
                 text: orderRightButtonText[tabIndex],
                 textColor: isDark ? Colours.dark_button_text : Colors.white,
                 bgColor: isDark ? Colours.dark_app_main : Colours.app_main,
+                onTap: () {
+                  if (tabIndex == 2) {
+                    _showPayTypeDialog(context);
+                  }
+                },
               ),
           ],
         ),
@@ -141,6 +154,7 @@ class OrderItem extends StatelessWidget {
     );
   }
 
+  // 拨打电话弹窗
   void _showCallPhoneDialog(BuildContext context, String phone) {
     showDialog(
       context: context,
@@ -149,17 +163,19 @@ class OrderItem extends StatelessWidget {
         return AlertDialog(
           title: const Text('提示'),
           content: Text('是否拨打：$phone ?'),
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: () => AppNavigatorUtils.goBack(context),
               child: const Text('取消'),
             ),
             TextButton(
               onPressed: () {
                 Utils.launchTelURL(phone);
-                Navigator.of(context).pop();
+                AppNavigatorUtils.goBack(context);
               },
               style: ButtonStyle(
                 // 按下高亮颜色
@@ -177,6 +193,20 @@ class OrderItem extends StatelessWidget {
       },
     );
   }
+}
+
+// 支付方式弹窗
+void _showPayTypeDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return PayTypeDialog(
+        onPressed: (index, type) {
+          Toast.show('收款类型：$type');
+        },
+      );
+    },
+  );
 }
 
 class OrderItemButton extends StatelessWidget {

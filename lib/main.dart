@@ -3,6 +3,7 @@ import 'package:flutter_deer/common/provider/theme_provider.dart';
 import 'package:flutter_deer/pages/login/login_page.dart';
 import 'package:flutter_deer/pages/order/order_page.dart';
 import 'package:flutter_deer/tabbar/app_navigation.dart';
+import 'package:flutter_deer/util/device_utils.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
@@ -10,6 +11,9 @@ import 'package:provider/provider.dart';
 void main() async {
   // 确保初始化完成
   WidgetsFlutterBinding.ensureInitialized();
+
+  // 初始化设备信息
+  await Device.initDeviceInfo();
 
   // 运行应用程序
   runApp(const MyApp());

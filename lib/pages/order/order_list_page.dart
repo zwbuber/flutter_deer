@@ -1,3 +1,4 @@
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_deer/pages/order/provider/order_page_provider.dart';
 import 'package:flutter_deer/pages/order/widget/order_item.dart';
@@ -52,9 +53,9 @@ class _OrderListPageState extends State<OrderListPage>
     // NotificationListener 监听通知
     return NotificationListener(
       // RefreshIndicator 下拉刷新控件
-      child: RefreshIndicator(
+      child: EasyRefresh(
+        header: const ClassicHeader(triggerOffset: 120.0),
         onRefresh: _onRefresh,
-        displacement: 120.0, // 默认40， 多添加的80为Header高度
         child: Consumer<OrderPageProvider>(
           builder: (_, provider, child) {
             return CustomScrollView(
@@ -76,7 +77,7 @@ class _OrderListPageState extends State<OrderListPage>
           child: SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             sliver: _list.isEmpty
-                ? SliverFillRemaining(child:  StateLayout(type: _stateType))
+                ? SliverFillRemaining(child: StateLayout(type: _stateType))
                 : SliverList(
                     delegate: SliverChildBuilderDelegate((
                       BuildContext context,

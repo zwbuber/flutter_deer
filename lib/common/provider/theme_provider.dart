@@ -14,6 +14,8 @@ class ThemeProvider extends ChangeNotifier {
         secondary: isDarkMode ? Colours.dark_app_main : Colours.app_main,
         error: isDarkMode ? Colours.dark_red : Colours.red,
       ),
+      // 主要用于Material背景色
+      canvasColor: isDarkMode ? Colours.dark_material_bg : Colors.white,
       // 页面背景色
       scaffoldBackgroundColor: isDarkMode
           ? Colours.dark_bg_color
