@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_deer/pages/order/order_track_page.dart';
 import 'package:flutter_deer/pages/order/widget/pay_type_dialog.dart';
 import 'package:flutter_deer/res/colors.dart';
 import 'package:flutter_deer/res/gaps.dart';
@@ -116,7 +117,7 @@ class OrderItem extends StatelessWidget {
               text: '联系客服',
               textColor: isDark ? Colours.dark_text : Colours.text,
               bgColor: isDark ? Colours.dark_material_bg : Colours.bg_gray,
-              onTap: () => _showCallPhoneDialog(context, '15000000000'),
+              onTap: () => _showCallPhoneDialog(context, '15000000000'), // 拨打电话
             ),
             const Expanded(child: Gaps.empty),
             OrderItemButton(
@@ -126,7 +127,8 @@ class OrderItem extends StatelessWidget {
               bgColor: isDark ? Colours.dark_material_bg : Colours.bg_gray,
               onTap: () {
                 if (tabIndex >= 2) {
-                  // AppNavigatorUtils.push(context, OrderRouter.orderTrackPage);
+                  // 订单跟踪页面
+                  AppNavigatorUtils.push(context, const OrderTrackPage());
                 }
               },
             ),
@@ -144,6 +146,7 @@ class OrderItem extends StatelessWidget {
                 bgColor: isDark ? Colours.dark_app_main : Colours.app_main,
                 onTap: () {
                   if (tabIndex == 2) {
+                    // 完成订单
                     _showPayTypeDialog(context);
                   }
                 },

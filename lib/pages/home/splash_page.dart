@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_deer/pages/order/order_page.dart';
+import 'package:flutter_deer/tabbar/app_navigation.dart';
 import 'package:flutter_deer/util/app_navigator_utils.dart';
 import 'package:flutter_deer/util/device_utils.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
@@ -32,12 +32,12 @@ class _SplashPageState extends State<SplashPage> {
 
   void _initSplash() {
     Future.delayed(const Duration(microseconds: 1500), () {
-      _goLogin();
+      _goAppNavigation();
     });
   }
 
-  void _goLogin() {
-    AppNavigatorUtils.push(context, const OrderPage());
+  void _goAppNavigation() {
+    AppNavigatorUtils.pushAndRemoveUntil(context, const AppNavigation());
   }
 
   @override

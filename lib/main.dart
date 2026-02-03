@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_deer/common/provider/theme_provider.dart';
+import 'package:flutter_deer/pages/home/splash_page.dart';
 import 'package:flutter_deer/pages/login/login_page.dart';
 import 'package:flutter_deer/pages/order/order_page.dart';
 import 'package:flutter_deer/tabbar/app_navigation.dart';
@@ -79,7 +80,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false, // 是否显示右上角debug的标签
       theme: provider.getTheme(), // 主题配置
       darkTheme: provider.getTheme(isDarkMode: true), // 深色主题配置
-      home: const AppNavigation(), // 首页配置
+      home: const SplashPage(), // 首页配置
       onGenerateRoute: getRoute, // 路由配置
     );
   }

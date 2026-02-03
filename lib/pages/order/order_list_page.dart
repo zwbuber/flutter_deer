@@ -1,9 +1,9 @@
-import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_deer/pages/order/provider/order_page_provider.dart';
 import 'package:flutter_deer/pages/order/widget/order_item.dart';
 import 'package:flutter_deer/pages/order/widget/order_tag_item.dart';
 import 'package:flutter_deer/util/change_notifier_manage.dart';
+import 'package:flutter_deer/widgets/my_refresh_list.dart';
 import 'package:flutter_deer/widgets/state_layout.dart';
 import 'package:provider/provider.dart';
 
@@ -16,8 +16,7 @@ class OrderListPage extends StatefulWidget {
   State<OrderListPage> createState() => _OrderListPageState();
 }
 
-// AutomaticKeepAliveClientMixin 实现 keepAlive 保持状态，避免重建页面，保持状态不变。
-
+// AutomaticKeepAliveClientMixin 实现 keepAlive 保持状态，避免重建页面，保持状态不变
 class _OrderListPageState extends State<OrderListPage>
     with
         AutomaticKeepAliveClientMixin<OrderListPage>,
@@ -52,20 +51,26 @@ class _OrderListPageState extends State<OrderListPage>
 
     // NotificationListener 监听通知
     return NotificationListener(
+      onNotification: (ScrollNotification note) {
+        if (note.metrics.pixels == note.metrics.maxScrollExtent) {
+          _loadMore();
+        }
+        return true;
+      },
       // RefreshIndicator 下拉刷新控件
-      child: EasyRefresh(
-        header: const ClassicHeader(triggerOffset: 120.0),
+      child: RefreshIndicator(
+        displacement: 120.0, // 默认40， 多添加的80为Header高度
         onRefresh: _onRefresh,
         child: Consumer<OrderPageProvider>(
           builder: (_, provider, child) {
             return CustomScrollView(
-              /// 这里指定controller可以与外层NestedScrollView的滚动分离，避免一处滑动，5个Tab中的列表同步滑动。
-              /// 这种方法的缺点是会重新layout列表
+              // 这里指定controller可以与外层NestedScrollView的滚动分离，避免一处滑动，5个Tab中的列表同步滑动。
+              // 这种方法的缺点是会重新layout列表
               controller: _index != provider.index ? _controller : null,
               key: PageStorageKey<String>('$_index'),
               slivers: <Widget>[
                 SliverOverlapInjector(
-                  ///SliverAppBar的expandedHeight高度,避免重叠
+                  // SliverAppBar的expandedHeight高度,避免重叠
                   handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
                     context,
                   ),
@@ -94,7 +99,7 @@ class _OrderListPageState extends State<OrderListPage>
                                     index: index,
                                     tabIndex: _index,
                                   ))
-                          : const SizedBox();
+                          : MoreWidget(_list.length, _hasMore(), 10);
                     }, childCount: _list.length + 1),
                   ),
           ),
